@@ -33,8 +33,7 @@ Finally, make the final settings.
 ```python
 MIDDLEWARE = [
   ...,
-  'django.contrib.auth.middleware.AuthenticationMiddleware',
-  ...,
+  'django_user_agents.middleware.UserAgentMiddleware',
   'useragents.services.UserAgentDeviceMiddleware',
 ]
 ```
