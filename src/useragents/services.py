@@ -31,18 +31,17 @@ class UserAgentDeviceMiddleware(MiddlewareMixin):
 
         try:
             obj = UserAgentDevice.objects.get(key=adk)
-            self.uad_schema = obj
-            return self.uad_schema
-
         except UserAgentDevice.DoesNotExist:
             self.uad_schema = request
-            obj, _ = UserAgentDevice.objects.get_or_create(
-                **self.uad_schema.model_dump()
-            )
-            self.uad_schema = obj
-            return self.uad_schema
+            try:
+                obj = UserAgentDevice.objects.get(key=self.uad_schema.key)
+            except UserAgentDevice.DoesNotExist:
+                obj = UserAgentDevice.objects.create(**self.uad_schema.model_dump())
         except Exception as exc:
             raise exc.args[0]
+
+        self.uad_schema = obj
+        return self.uad_schema
 
     _uad_schema = None
 
