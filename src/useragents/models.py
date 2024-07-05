@@ -3,28 +3,6 @@ from django.contrib.auth import get_user_model
 from django.db import models
 
 
-def user_agent_device_key_creator(instance):
-    from hashlib import md5
-
-    str_ = (
-        f"{instance.user_agent_is_mobile}-"
-        f"{instance.user_agent_is_tablet}-"
-        f"{instance.user_agent_is_touch_capable}-"
-        f"{instance.user_agent_is_pc}-"
-        f"{instance.user_agent_is_bot}-"
-        f"{instance.user_agent_browser_family}-"
-        f"{instance.user_agent_browser_version}-"
-        f"{instance.user_agent_os_family}-"
-        f"{instance.user_agent_os_version}-"
-        f"{instance.user_agent_device_family}-"
-        f"{instance.user_agent_device_brand}-"
-        f"{instance.user_agent_device_model}-"
-        f"{instance.ip}"
-    )
-    ret = str(md5(str_.encode('utf-8')).hexdigest())
-    return ret
-
-
 class UserAgentDevice(models.Model):
     key = models.CharField(
         verbose_name=_('Key'),
@@ -144,10 +122,6 @@ class UserAgentDevice(models.Model):
 
     def __str__(self):
         return f'{self.key}'
-
-    def save(self, **kwargs):
-        self.key = user_agent_device_key_creator(self)
-        super().save(**kwargs)
 
     class Meta:
         verbose_name = _('UserAgentDevice')
