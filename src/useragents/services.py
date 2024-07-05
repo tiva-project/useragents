@@ -6,7 +6,7 @@ from .models import UserAgentDevice
 class UserAgentDeviceMiddleware(MiddlewareMixin):
 
     def process_request(self, request):
-        uad_schema = self.user_agent_device_id(request)
+        uad_schema = self.user_agent_device(request)
         setattr(request, 'uad', uad_schema)
 
     def process_response(self, request, response):
