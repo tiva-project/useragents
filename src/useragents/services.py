@@ -21,24 +21,40 @@ class UserAgentDeviceMiddleware(MiddlewareMixin):
         )
         return response
 
+    def _get_user_agent_device_obj(self, adk, user_id):
+        try:
+            obj = UserAgentDevice.objects.get(key=adk)
+            if obj.user_id is None and user_id is not None:
+                obj = None
+        except UserAgentDevice.DoesNotExist:
+            obj = None
+        return obj
+
+    def _get_or_create_user_agent_device_obj(self, request):
+        self.uad_schema = request
+        try:
+            obj = UserAgentDevice.objects.get(key=self.uad_schema.key)
+        except UserAgentDevice.DoesNotExist:
+            obj = UserAgentDevice.objects.create(**self.uad_schema.model_dump())
+        except Exception as exc:
+            raise exc.args[0]
+
+        return obj
+
     def user_agent_device(self, request):
 
         cookie_name = 'UAD'
         if not hasattr(request, 'COOKIES'):
             return None
 
+        user_id = request.user.id if request.user.is_authenticated else None
+
         adk = request.COOKIES.get(cookie_name)
 
-        try:
-            obj = UserAgentDevice.objects.get(key=adk)
-        except UserAgentDevice.DoesNotExist:
-            self.uad_schema = request
-            try:
-                obj = UserAgentDevice.objects.get(key=self.uad_schema.key)
-            except UserAgentDevice.DoesNotExist:
-                obj = UserAgentDevice.objects.create(**self.uad_schema.model_dump())
-        except Exception as exc:
-            raise exc.args[0]
+        obj = (
+            self._get_user_agent_device_obj(adk=adk, user_id=user_id) or
+            self._get_or_create_user_agent_device_obj(request)
+        )
 
         self.uad_schema = obj
         return self.uad_schema
