@@ -1,5 +1,5 @@
 <div align="center">
-<img src="README_DOT_MD_RESOURCES/HEADER.png" width="100%" style="text-align-all:center; ">
+<img src="README_DOT_MD_RESOURCES/HEADER.png" width="50%" style="text-align-all:center; ">
 </div>
 
 # User Agent Device
