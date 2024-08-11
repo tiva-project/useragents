@@ -2,12 +2,12 @@ from django.http.request import HttpRequest
 from pydantic import BaseModel
 from datetime import datetime
 from hashlib import md5
+from uuid import UUID
 
 from .models import UserAgentDevice
 
 
 def _user_agent_device_key_creator(**kwargs):
-
     str_ = (
         f"{kwargs.get('user_id')}-"
         f"{kwargs.get('user_agent_is_mobile')}-"
@@ -85,7 +85,7 @@ class UADSchema(BaseModel):
         super().__init__(**kw)
 
     id: int | None = None
-    user_id: int | None = None
+    user_id: int | UUID | None = None
     user_agent_is_mobile: bool | None = None
     user_agent_is_tablet: bool | None = None
     user_agent_is_touch_capable: bool | None = None
